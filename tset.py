@@ -14,6 +14,16 @@ class tset:
             self.set(value, when)
 
     def set(self, value, when=None):
+        """
+        Declare a known value of the set as of a specified time, or now.
+
+        No return value (returns None).
+
+        Parameters
+        ----------
+        value : set or iterable
+        when : datetime (set to datetime.now() if None)
+        """
         if when is None:
             when = datetime.now()
         if type(when) != datetime:
@@ -45,6 +55,19 @@ class tset:
             self.data[when] = content
 
     def get(self, when=None, just_value=True):
+        """
+        Get the set's value as of a specified time, or now.
+        Optionally also get the datetime of the returned update.
+
+        Returns a set, or a (set, datetime) tuple with just_value=False.
+
+        Parameters
+        ----------
+        when : datetime (set to datetime.now() if None)
+        just_value : if False, return only the set value;
+                     if True, also return the as-of time of
+                     the update returned
+        """
         if when is None:
             when = datetime.now()
         best = max(filter(lambda then: then <= when, self.data.keys()))
