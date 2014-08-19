@@ -39,7 +39,7 @@ class tset:
         else:
             later = min(filter(lambda then: when < then, self.data.keys()) or [None])
             if later is not None:
-                next = self.get(later)[0]
+                next = self.get(later)
                 adds = next - value
                 dels = value - next
                 content = {'type': 'changes',
