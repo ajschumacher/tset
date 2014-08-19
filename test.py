@@ -4,13 +4,20 @@ import unittest
 
 class TestCreation(unittest.TestCase):
 
-    def test_creating_empty(self):
+    def test_creating_blank(self):
         t = tset()
         self.assertEqual(t.get(), set())
+        self.assertEqual(t.get(just_value=False)[1], datetime.min)
+
+    def test_creating_empty(self):
+        t = tset(set())
+        self.assertEqual(t.get(), set())
+        self.assertNotEqual(t.get(just_value=False)[1], datetime.min)
 
     def test_creating_with_set(self):
         t = tset(set([1, 2, 3]))
         self.assertEqual(t.get(), set([1, 2, 3]))
+        self.assertNotEqual(t.get(just_value=False)[1], datetime.min)
 
     def test_creating_with_list(self):
         t = tset([1, 2, 3])
@@ -28,6 +35,7 @@ class TestEdges(unittest.TestCase):
         before = datetime.now()
         t = tset([1])
         self.assertEqual(t.get(before), set())
+        self.assertEqual(t.get(before, just_value=False)[1], datetime.min)
 
 class TestReturns(unittest.TestCase):
 
