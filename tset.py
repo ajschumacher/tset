@@ -87,5 +87,22 @@ class tset:
                 return value, best
             return value, best
 
+    def value(self, value=None, at=None, just_value=True):
+        """
+        Assign or access the value of the tset, as of a specified time, or now.
+
+        Parameters
+        ----------
+        value : set or iterable
+        at : datetime (set to datetime.now() if None)
+        just_value : if False, return only the set value;
+                     if True, also return the as-of time of
+                     the update returned
+        """
+        if value is None:
+            return self.get(at, just_value)
+        else:
+            return self.set(value, at)
+
     def __repr__(self):
         return self.get().__repr__()
