@@ -2,6 +2,9 @@ from datetime import datetime, timedelta
 microsec = timedelta(microseconds=1)
 
 class Tset:
+    """
+    Time sets maintain the states of a set data structure over time.
+    """
 
     def __init__(self, value=None, at=None, data=None):
         if data is not None:
