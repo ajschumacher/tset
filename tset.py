@@ -1,7 +1,7 @@
 from datetime import datetime, timedelta
 microsec = timedelta(microseconds=1)
 
-class tset:
+class Tset:
 
     def __init__(self, value=None, at=None, data=None):
         if data is not None:
