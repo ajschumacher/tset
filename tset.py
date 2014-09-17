@@ -9,11 +9,11 @@ class tset:
             return
         else:
             self.data = dict()
-        self.set(set(), datetime.min) # everything starts from nothing
+        self.assign(set(), datetime.min) # everything starts from nothing
         if value is not None or when is not None:
-            self.set(value, when)
+            self.assign(value, when)
 
-    def set(self, value, when=None):
+    def assign(self, value, when=None):
         """
         Declare a known value of the set as of a specified time, or now.
 
@@ -39,14 +39,14 @@ class tset:
         else:
             later = min(filter(lambda then: when < then, self.data.keys()) or [None])
             if later is not None:
-                next = self.get(later)
+                next = self.value(at=later)
                 adds = next - value
                 dels = value - next
                 content = {'type': 'changes',
                            'adds': adds,
                            'dels': dels}
                 self.data[later] = content
-            base = self.get(when)
+            base = self.value(at=when)
             adds = value - base
             dels = base - value
             content = {'type': 'changes',
@@ -54,7 +54,7 @@ class tset:
                        'dels': dels}
             self.data[when] = content
 
-    def get(self, when=None, just_value=True):
+    def access(self, when=None, just_value=True):
         """
         Get the set's value as of a specified time, or now.
         Optionally also get the datetime of the returned update.
@@ -78,7 +78,7 @@ class tset:
             else:
                 return content['value'], best
         else:
-            value = ((self.get(best - microsec)
+            value = ((self.value(at=best - microsec)
                       | content['adds'])
                       - content['dels'])
             if just_value:
@@ -100,9 +100,9 @@ class tset:
                      the update returned
         """
         if value is None:
-            return self.get(at, just_value)
+            return self.access(at, just_value)
         else:
-            return self.set(value, at)
+            return self.assign(value, at)
 
     def __repr__(self):
-        return self.get().__repr__()
+        return self.value().__repr__()
