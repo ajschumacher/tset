@@ -29,7 +29,7 @@ class Tset:
         Parameters
         ----------
         value : set or iterable
-        at : datetime (set to datetime.now() if None)
+        at : datetime (defaults to datetime.now() if None)
         """
         if at is None:
             at = datetime.now()
@@ -67,7 +67,7 @@ class Tset:
 
         Parameters
         ----------
-        at : datetime (set to datetime.now() if None)
+        at : datetime (defaults to datetime.now() if None)
         just_value : if False, return only the set value;
                      if True, also return the as-of time of
                      the update returned
@@ -98,7 +98,7 @@ class Tset:
         Parameters
         ----------
         value : set or iterable
-        at : datetime (set to datetime.now() if None)
+        at : datetime (defaults to datetime.now() if None)
         just_value : if False, return only the set value;
                      if True, also return the as-of time of
                      the update returned
