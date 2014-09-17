@@ -23,3 +23,7 @@ with litle regard for access performance
 > t.get(beginning)
 # {}
 ```
+
+### tests
+
+Run the tests with `nosetests` or `python -m test`.
