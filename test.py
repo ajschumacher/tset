@@ -25,7 +25,7 @@ class TestCreation(unittest.TestCase):
 
     def test_creating_empty_at_time(self):
         time = datetime.now()
-        t = tset(when=time)
+        t = tset(at=time)
         self.assertEqual(t.value(), set())
         self.assertEqual(t.value(just_value=False), (set(), time))
 

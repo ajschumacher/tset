@@ -3,17 +3,21 @@ microsec = timedelta(microseconds=1)
 
 class tset:
 
-    def __init__(self, value=None, when=None, data=None):
+    def __init__(self, value=None, at=None, data=None):
         if data is not None:
+            if value is not None or at is not None:
+                raise ValueError("`data` must be only argument")
             self.data = data # no checking!
             return
-        else:
-            self.data = dict()
-        self.assign(set(), datetime.min) # everything starts from nothing
-        if value is not None or when is not None:
-            self.assign(value, when)
+        self.data = dict()
+        self.value(set(), at=datetime.min) # everything starts from nothing
+        if value is None and at is None:
+            return # no information in the Tset
+        if value is None:
+            value = set() # specfied `at` but not value; starts empty here
+        self.value(value, at=at) # `at` will get defaulted to now if need be
 
-    def _assign(self, value, when=None):
+    def _assign(self, value, at=None):
         """
         Declare a known value of the set as of a specified time, or now.
 
@@ -22,11 +26,11 @@ class tset:
         Parameters
         ----------
         value : set or iterable
-        when : datetime (set to datetime.now() if None)
+        at : datetime (set to datetime.now() if None)
         """
-        if when is None:
-            when = datetime.now()
-        if type(when) != datetime:
+        if at is None:
+            at = datetime.now()
+        if type(at) != datetime:
             raise TypeError("must be a datetime")
         if value is None:
             value = set()
@@ -35,9 +39,9 @@ class tset:
         if 0 == len(self.data): # single checkpoint at origin
             content = {'type': 'checkpoint',
                        'value': value}
-            self.data[when] = content
+            self.data[at] = content
         else:
-            later = min(filter(lambda then: when < then, self.data.keys()) or [None])
+            later = min(filter(lambda then: at < then, self.data.keys()) or [None])
             if later is not None:
                 next = self.value(at=later)
                 adds = next - value
@@ -46,15 +50,15 @@ class tset:
                            'adds': adds,
                            'dels': dels}
                 self.data[later] = content
-            base = self.value(at=when)
+            base = self.value(at=at)
             adds = value - base
             dels = base - value
             content = {'type': 'changes',
                        'adds': adds,
                        'dels': dels}
-            self.data[when] = content
+            self.data[at] = content
 
-    def _access(self, when=None, just_value=True):
+    def _access(self, at=None, just_value=True):
         """
         Get the set's value as of a specified time, or now.
         Optionally also get the datetime of the returned update.
@@ -63,14 +67,14 @@ class tset:
 
         Parameters
         ----------
-        when : datetime (set to datetime.now() if None)
+        at : datetime (set to datetime.now() if None)
         just_value : if False, return only the set value;
                      if True, also return the as-of time of
                      the update returned
         """
-        if when is None:
-            when = datetime.now()
-        best = max(filter(lambda then: then <= when, self.data.keys()))
+        if at is None:
+            at = datetime.now()
+        best = max(filter(lambda then: then <= at, self.data.keys()))
         content = self.data[best]
         if content['type'] == 'checkpoint':
             if just_value:
