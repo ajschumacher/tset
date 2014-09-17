@@ -13,7 +13,7 @@ class tset:
         if value is not None or when is not None:
             self.assign(value, when)
 
-    def assign(self, value, when=None):
+    def _assign(self, value, when=None):
         """
         Declare a known value of the set as of a specified time, or now.
 
@@ -54,7 +54,7 @@ class tset:
                        'dels': dels}
             self.data[when] = content
 
-    def access(self, when=None, just_value=True):
+    def _access(self, when=None, just_value=True):
         """
         Get the set's value as of a specified time, or now.
         Optionally also get the datetime of the returned update.
@@ -100,9 +100,9 @@ class tset:
                      the update returned
         """
         if value is None:
-            return self.access(at, just_value)
+            return self._access(at, just_value)
         else:
-            return self.assign(value, at)
+            return self._assign(value, at)
 
     def __repr__(self):
         return self.value().__repr__()
