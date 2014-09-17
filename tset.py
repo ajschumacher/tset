@@ -37,8 +37,7 @@ class Tset:
         else:
             value = set(value)
         if 0 == len(self.data): # single checkpoint at origin
-            content = {'type': 'checkpoint',
-                       'value': value}
+            content = {'value': value}
             self.data[at] = content
         else:
             later = min(filter(lambda then: at < then, self.data.keys()) or [None])
@@ -46,15 +45,13 @@ class Tset:
                 next = self.value(at=later)
                 adds = next - value
                 dels = value - next
-                content = {'type': 'changes',
-                           'adds': adds,
+                content = {'adds': adds,
                            'dels': dels}
                 self.data[later] = content
             base = self.value(at=at)
             adds = value - base
             dels = base - value
-            content = {'type': 'changes',
-                       'adds': adds,
+            content = {'adds': adds,
                        'dels': dels}
             self.data[at] = content
 
@@ -76,7 +73,7 @@ class Tset:
             at = datetime.now()
         best = max(filter(lambda then: then <= at, self.data.keys()))
         content = self.data[best]
-        if content['type'] == 'checkpoint':
+        if 'value' in content:
             if just_value:
                 return content['value']
             else:
