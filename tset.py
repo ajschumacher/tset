@@ -1,7 +1,7 @@
 from datetime import datetime, timedelta
 microsec = timedelta(microseconds=1)
 
-class Tset:
+class Tset(object):
     """
     Time sets maintain the states of a set data structure over time.
     """
