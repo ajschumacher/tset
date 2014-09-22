@@ -1,5 +1,6 @@
 from tset import Tset
 from datetime import datetime, timedelta
+import sys
 import unittest
 
 class TestCreation(unittest.TestCase):
@@ -165,6 +166,19 @@ class TestSameTimeUpdates(unittest.TestCase):
         self.assertEqual(tset.value(at=four), set(['a', 'b', 3]))
         self.assertEqual(tset.value(at=five), set(['a', 'b', 3]))
         self.assertEqual(tset.value(), set([3, 4, 5]))
+
+class TestPerformance(unittest.TestCase):
+
+    def test_not_limited_by_recursion_limit(self):
+        n = sys.getrecursionlimit()
+        one = datetime.now()
+        two = datetime.now()
+        tset = Tset([0], two)
+        for i in range(1, n+11):
+            tset.value([i])
+        self.assertEqual(tset.value(at=one), set())
+        self.assertEqual(tset.value(at=two), set([0]))
+        self.assertEqual(tset.value(), set([n+10]))
 
 
 if __name__ == '__main__':
