@@ -19,6 +19,13 @@ class Tset(object):
             value = set() # specfied `at` but not value; starts empty here
         self.value(value, at=at) # `at` will get defaulted to now if need be
 
+    @classmethod
+    def from_lists(cls, lists):
+        result = cls()
+        for value, time in lists:
+            result.value(value, time)
+        return result
+
     def _assign(self, value, at=None):
         """
         Declare a known value of the set as of a specified time, or now.
@@ -105,6 +112,21 @@ class Tset(object):
             return self._access(at, just_value)
         else:
             return self._assign(value, at)
+
+    def _all_value_times(self):
+        times = sorted(self._data.keys(), reverse=True)
+        if len(times) == 0:
+            return
+        time = times.pop(0)
+        value = self._data[time]['value']
+        yield [value, time]
+        for time in times:
+            value = (value | self._data[time]['adds']) - self._data[time]['dels']
+            yield [value, time]
+
+    def to_lists(self):
+        return reversed([[list(value), time] for value, time
+                         in self._all_value_times()])
 
     def __repr__(self):
         return self.value().__repr__()
