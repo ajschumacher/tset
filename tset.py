@@ -17,9 +17,23 @@ class Tset(object):
     @classmethod
     def from_lists(cls, lists):
         result = cls()
-        for value, time in lists:
-            result.value(value, time)
+        for record in lists:
+            if len(record) == 3:
+                result._data[record[2]] = {'adds': set(record[0]),
+                                           'dels': set(record[1])}
+            else:
+                result._data[record[1]] = {'value': set(record[0])}
         return result
+
+    def to_lists(self):
+        times = sorted(self._data.keys())
+        for time in times:
+            if len(self._data[time]) == 2:
+                yield [list(self._data[time]['adds']),
+                       list(self._data[time]['dels']),
+                       time]
+            else:
+                yield [list(self._data[time]['value']), time]
 
     def _assign(self, value, at=None):
         """
@@ -107,21 +121,6 @@ class Tset(object):
             return self._access(at, just_value)
         else:
             return self._assign(value, at)
-
-    def _all_value_times(self):
-        times = sorted(self._data.keys(), reverse=True)
-        if len(times) == 0:
-            return
-        time = times.pop(0)
-        value = self._data[time]['value']
-        yield [value, time]
-        for time in times:
-            value = (value | self._data[time]['adds']) - self._data[time]['dels']
-            yield [value, time]
-
-    def to_lists(self):
-        return reversed([[list(value), time] for value, time
-                         in self._all_value_times()])
 
     def __repr__(self):
         return self.value().__repr__()
