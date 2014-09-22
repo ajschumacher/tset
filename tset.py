@@ -10,10 +10,9 @@ class Tset(object):
         if data is not None:
             if value is not None or at is not None:
                 raise ValueError("`data` must be only argument")
-            self.data = data # no checking!
+            self._data = data # no checking!
             return
-        self.data = dict()
-        self.value(set(), at=datetime.min) # everything starts from nothing
+        self._data = dict() # initialize empty
         if value is None and at is None:
             return # no information in the Tset
         if value is None:
@@ -39,24 +38,24 @@ class Tset(object):
             value = set()
         else:
             value = set(value)
-        if 0 == len(self.data): # single checkpoint at origin
-            content = {'value': value}
-            self.data[at] = content
+        times = self._data.keys()
+        if len(times) == 0:
+            self._data[at] = {'value': value}
+            return
+        # only support latest-time updates for now
+        last_time = max(times)
+        if at <= last_time:
+            raise ValueError("`at` must be later than ever")
+        last_value = self._data[last_time].pop('value')
+        self._data[at] = {'value': value}
+        self._data[last_time]['adds'] = last_value - value
+        self._data[last_time]['dels'] = value - last_value
+
+    def __value_time(self, value, time, just_value):
+        if just_value:
+            return value
         else:
-            later = min(filter(lambda then: at < then, self.data.keys()) or [None])
-            if later is not None:
-                next = self.value(at=later)
-                adds = next - value
-                dels = value - next
-                content = {'adds': adds,
-                           'dels': dels}
-                self.data[later] = content
-            base = self.value(at=at)
-            adds = value - base
-            dels = base - value
-            content = {'adds': adds,
-                       'dels': dels}
-            self.data[at] = content
+            return value, time
 
     def _access(self, at=None, just_value=True):
         """
@@ -74,22 +73,18 @@ class Tset(object):
         """
         if at is None:
             at = datetime.now()
-        best = max(filter(lambda then: then <= at, self.data.keys()))
-        content = self.data[best]
-        if 'value' in content:
-            if just_value:
-                return content['value']
-            else:
-                return content['value'], best
-        else:
-            value = ((self.value(at=best - microsec)
-                      | content['adds'])
-                      - content['dels'])
-            if just_value:
-                return value
-            else:
-                return value, best
-            return value, best
+        times = sorted(self._data.keys(), reverse=True)
+        if len(times) == 0:
+            return self.__value_time(set(), datetime.min, just_value)
+        time = times.pop(0)
+        value = self._data[time]['value']
+        if time < at:
+            return self.__value_time(value, time, just_value)
+        for time in times:
+            value = (value | self._data[time]['adds']) - self._data[time]['dels']
+            if time < at:
+                return self.__value_time(value, time, just_value)
+        return self.__value_time(set(), datetime.min, just_value)
 
     def value(self, value=None, at=None, just_value=True):
         """
