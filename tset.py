@@ -42,14 +42,22 @@ class Tset(object):
         if len(times) == 0:
             self._data[at] = {'value': value}
             return
-        # only support latest-time updates for now
-        last_time = max(times)
-        if at <= last_time:
-            raise ValueError("`at` must be later than ever")
-        last_value = self._data[last_time].pop('value')
-        self._data[at] = {'value': value}
-        self._data[last_time]['adds'] = last_value - value
-        self._data[last_time]['dels'] = value - last_value
+        if at in times:
+            raise ValueError('same-time updates not yet supported')
+        times.sort()
+        last_time = times[-1]
+        if last_time < at:
+            last_value = self._data[last_time].pop('value')
+            self._data[at] = {'value': value}
+            self._data[last_time]['adds'] = last_value - value
+            self._data[last_time]['dels'] = value - last_value
+            return
+        first_time = times[0]
+        if at < first_time:
+            first_value = self.value(at=first_time)
+            self._data[at] = {'adds': value - first_value,
+                              'dels': first_value - value}
+            return
 
     def __value_time(self, value, time, just_value):
         if just_value:
@@ -78,11 +86,11 @@ class Tset(object):
             return self.__value_time(set(), datetime.min, just_value)
         time = times.pop(0)
         value = self._data[time]['value']
-        if time < at:
+        if time <= at:
             return self.__value_time(value, time, just_value)
         for time in times:
             value = (value | self._data[time]['adds']) - self._data[time]['dels']
-            if time < at:
+            if time <= at:
                 return self.__value_time(value, time, just_value)
         return self.__value_time(set(), datetime.min, just_value)
 
