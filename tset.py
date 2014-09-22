@@ -39,8 +39,6 @@ class Tset(object):
         else:
             value = set(value)
         times = self._data.keys()
-        if at in times:
-            raise ValueError('same-time updates not yet supported')
         befores = filter(lambda time: time < at, times)
         if 1 <= len(befores):
             before = max(befores)

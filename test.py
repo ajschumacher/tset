@@ -122,6 +122,50 @@ class TestUpdates(unittest.TestCase):
         # value we put in is kept there until later change
         self.assertEqual(tset.value(at=four), set([2, 3, 4, 6]))
 
+class TestSameTimeUpdates(unittest.TestCase):
+
+    def test_single_same_time_update(self):
+        one = datetime.now()
+        tset = Tset([1, 2, 3], one)
+        tset.value(['a'], one)
+        self.assertEqual(tset.value(), set(['a']))
+
+    def test_initial_same_time_update(self):
+        one = datetime.now()
+        tset = Tset([1, 2, 3], one)
+        tset.value([2, 3, 4])
+        tset.value(['a'], one)
+        self.assertEqual(tset.value(), set([2, 3, 4]))
+
+    def test_last_same_time_update(self):
+        one = datetime.now()
+        two = datetime.now()
+        tset = Tset([1, 2, 3], two)
+        three = datetime.now()
+        four = datetime.now()
+        tset.value([2, 3, 4], four)
+        tset.value(['a'], four)
+        self.assertEqual(tset.value(), set(['a']))
+        self.assertEqual(tset.value(at=three), set([1, 2, 3]))
+
+    def test_interposed_same_time_update(self):
+        one = datetime.now()
+        two = datetime.now()
+        three = datetime.now()
+        four = datetime.now()
+        five = datetime.now()
+        six = datetime.now()
+        tset = Tset([1, 2, 3], two)
+        tset.value([2, 3, 4], four)
+        tset.value([3, 4, 5], six)
+        tset.value(['a', 'b', 3], four)
+        self.assertEqual(tset.value(at=one), set())
+        self.assertEqual(tset.value(at=two), set([1, 2, 3]))
+        self.assertEqual(tset.value(at=three), set([1, 2, 3]))
+        self.assertEqual(tset.value(at=four), set(['a', 'b', 3]))
+        self.assertEqual(tset.value(at=five), set(['a', 'b', 3]))
+        self.assertEqual(tset.value(), set([3, 4, 5]))
+
 
 if __name__ == '__main__':
     unittest.main()
