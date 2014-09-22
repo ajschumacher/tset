@@ -6,12 +6,7 @@ class Tset(object):
     Time sets maintain the states of a set data structure over time.
     """
 
-    def __init__(self, value=None, at=None, data=None):
-        if data is not None:
-            if value is not None or at is not None:
-                raise ValueError("`data` must be only argument")
-            self._data = data # no checking!
-            return
+    def __init__(self, value=None, at=None):
         self._data = dict() # initialize empty
         if value is None and at is None:
             return # no information in the Tset
