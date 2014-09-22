@@ -39,25 +39,29 @@ class Tset(object):
         else:
             value = set(value)
         times = self._data.keys()
-        if len(times) == 0:
+        if len(times) == 0: # first data entry
             self._data[at] = {'value': value}
             return
         if at in times:
             raise ValueError('same-time updates not yet supported')
-        times.sort()
-        last_time = times[-1]
+        last_time = max(times)
         if last_time < at:
             last_value = self._data[last_time].pop('value')
             self._data[at] = {'value': value}
-            self._data[last_time]['adds'] = last_value - value
-            self._data[last_time]['dels'] = value - last_value
+            self._data[last_time] = {'adds': last_value - value,
+                                     'dels': value - last_value}
             return
-        first_time = times[0]
-        if at < first_time:
-            first_value = self.value(at=first_time)
-            self._data[at] = {'adds': value - first_value,
-                              'dels': first_value - value}
-            return
+        # at least one time entry after the current `at` to assign
+        befores = filter(lambda time: time < at, times)
+        if 0 < len(befores):
+            before = max(befores)
+            before_value = self.value(at=before)
+            self._data[before] = {'adds': before_value - value,
+                                  'dels': value - before_value}
+        after = min(filter(lambda time: at < time, times))
+        after_value = self.value(at=after)
+        self._data[at] = {'adds': value - after_value,
+                          'dels': after_value - value}
 
     def __value_time(self, value, time, just_value):
         if just_value:

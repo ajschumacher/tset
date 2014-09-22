@@ -108,7 +108,7 @@ class TestUpdates(unittest.TestCase):
         four = datetime.now()
         tset.value([3, 4, 5])
         five = datetime.now()
-        tset.value([2, 3, 4], three)
+        tset.value([2, 3, 4, 6], three)
         # final value still in place at time five
         self.assertEqual(tset.value(at=five), set([3, 4, 5]))
         # and now
@@ -118,9 +118,9 @@ class TestUpdates(unittest.TestCase):
         # initial value not messed with
         self.assertEqual(tset.value(at=two), set([1, 2, 3]))
         # value we put in is there
-        self.assertEqual(tset.value(at=three), set([2, 3, 4]))
+        self.assertEqual(tset.value(at=three), set([2, 3, 4, 6]))
         # value we put in is kept there until later change
-        self.assertEqual(tset.value(at=four), set([2, 3, 4]))
+        self.assertEqual(tset.value(at=four), set([2, 3, 4, 6]))
 
 
 if __name__ == '__main__':
