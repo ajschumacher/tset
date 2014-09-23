@@ -6,6 +6,9 @@ class Tset(object):
     """
 
     def __init__(self, value=None, at=None):
+        """
+        Create Tset, optionally with value at a time (datetime).
+        """
         self._data = dict() # initialize empty
         if value is None and at is None:
             return # no information in the Tset
@@ -86,6 +89,9 @@ class Tset(object):
             self._data[at] = {'value': value}
 
     def __value_time(self, value, time, just_value):
+        """
+        Return either a value or a value and time.
+        """
         if just_value:
             return value
         else:
@@ -138,4 +144,7 @@ class Tset(object):
             return self._assign(value, at)
 
     def __repr__(self):
+        """
+        Print current version to screen.
+        """
         return self.value().__repr__()
