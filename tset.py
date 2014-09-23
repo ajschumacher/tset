@@ -25,6 +25,17 @@ class Tset(object):
         return result
 
     def to_lists(self):
+        """
+        Export the current internal data in plain lists.
+
+        The return format is a list of lists. All but the last have
+        three elements: a list of `adds`, a list of `dels`, and the
+        `at` time. The last has two elements: a list of elements in
+        the latest version of the set, and the `at` time for that
+        state.
+
+        Suitable for storage in systems with limited data structures.
+        """
         times = sorted(self._data.keys())
         for time in times:
             if len(self._data[time]) == 2:
