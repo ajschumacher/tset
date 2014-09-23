@@ -34,7 +34,7 @@ Usage
   > t.value(at=beginning)
   # {}
 
-tests
+Tests
 -----
 
 Run the tests with ``nosetests`` or ``python -m test``.
