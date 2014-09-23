@@ -180,6 +180,16 @@ class TestPerformance(unittest.TestCase):
         self.assertEqual(tset.value(at=two), set([0]))
         self.assertEqual(tset.value(), set([n+10]))
 
+class TestToAndFromLists(unittest.TestCase):
+
+    def test_simple_to_lists(self):
+        one = datetime.now()
+        two = datetime.now()
+        tset = Tset([1], one)
+        tset.value([2], two)
+        list_form = [[[1], [2], one], [[2], two]]
+        result = [_ for _ in tset.to_lists()]
+        self.assertEqual(result, list_form)
 
 if __name__ == '__main__':
     unittest.main()
