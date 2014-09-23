@@ -1,5 +1,4 @@
-from datetime import datetime, timedelta
-microsec = timedelta(microseconds=1)
+from datetime import datetime
 
 class Tset(object):
     """
