@@ -11,7 +11,7 @@ class Tset(object):
             return # no information in the Tset
         if value is None:
             value = set() # specfied `at` but not value; starts empty here
-        self.value(value, at=at) # `at` will get defaulted to now if need be
+        self.value(value, at) # `at` will get defaulted to now if need be
 
     @classmethod
     def from_lists(cls, lists):
