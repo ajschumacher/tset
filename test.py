@@ -191,5 +191,16 @@ class TestToAndFromLists(unittest.TestCase):
         result = [_ for _ in tset.to_lists()]
         self.assertEqual(result, list_form)
 
+    def test_simple_from_lists(self):
+        one = datetime.now()
+        two = datetime.now()
+        list_form = [[[1], [2], one], [[2], two]]
+        dict_form = {one: {'adds': set([1]),
+                           'dels': set([2])},
+                     two: {'value': set([2])}}
+        tset = Tset.from_lists(list_form)
+        self.assertEqual(tset._data, dict_form)
+
+
 if __name__ == '__main__':
     unittest.main()
