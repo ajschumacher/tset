@@ -15,6 +15,11 @@ class Tset(object):
 
     @classmethod
     def from_lists(cls, lists):
+        """
+        Create a Tset from data in plain list format.
+
+        See `to_lists` for format details.
+        """
         result = cls()
         for record in lists:
             if len(record) == 3:
