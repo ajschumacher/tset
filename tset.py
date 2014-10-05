@@ -121,7 +121,8 @@ class Tset(object):
         if time <= at:
             return self.__value_time(value, time, just_value)
         for time in times:
-            value = (value | self._data[time]['adds']) - self._data[time]['dels']
+            value = ((value | self._data[time]['adds']) -
+                     self._data[time]['dels'])
             if time <= at:
                 return self.__value_time(value, time, just_value)
         return self.__value_time(set(), datetime.min, just_value)
