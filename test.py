@@ -3,6 +3,7 @@ from datetime import datetime, timedelta
 import sys
 import unittest
 
+
 class TestCreation(unittest.TestCase):
 
     def test_creating_blank(self):
@@ -30,18 +31,22 @@ class TestCreation(unittest.TestCase):
         self.assertEqual(tset.value(), set())
         self.assertEqual(tset.value(just_value=False), (set(), time))
 
+
 class TestEdges(unittest.TestCase):
 
     def test_early_access(self):
         before = datetime.now()
         tset = Tset([1])
         self.assertEqual(tset.value(at=before), set())
-        self.assertEqual(tset.value(at=before, just_value=False)[1], datetime.min)
+        self.assertEqual(tset.value(at=before,
+                                    just_value=False)[1],
+                         datetime.min)
 
     def test_time_must_be_time(self):
         tset = Tset()
         with self.assertRaises(TypeError):
             tset.value(set(), 'now')
+
 
 class TestReturns(unittest.TestCase):
 
@@ -55,6 +60,7 @@ class TestReturns(unittest.TestCase):
         self.assertEqual(len(response), 2)
         self.assertIs(type(response[0]), set)
         self.assertIs(type(response[1]), datetime)
+
 
 class TestUpdates(unittest.TestCase):
 
@@ -84,7 +90,8 @@ class TestUpdates(unittest.TestCase):
         tset = Tset()
         tset.value([1, 2, 3], datetime.now() + week)
         self.assertEqual(tset.value(), set())
-        self.assertEqual(tset.value(at=datetime.now() + 2*week), set([1, 2, 3]))
+        self.assertEqual(tset.value(at=datetime.now() + 2*week),
+                         set([1, 2, 3]))
 
     def test_past_update(self):
         one = datetime.now()
@@ -123,6 +130,7 @@ class TestUpdates(unittest.TestCase):
         # value we put in is kept there until later change
         self.assertEqual(tset.value(at=four), set([2, 3, 4, 6]))
 
+
 class TestSameTimeUpdates(unittest.TestCase):
 
     def test_single_same_time_update(self):
@@ -140,14 +148,13 @@ class TestSameTimeUpdates(unittest.TestCase):
 
     def test_last_same_time_update(self):
         one = datetime.now()
+        tset = Tset([1, 2, 3], one)
         two = datetime.now()
-        tset = Tset([1, 2, 3], two)
         three = datetime.now()
-        four = datetime.now()
-        tset.value([2, 3, 4], four)
-        tset.value(['a'], four)
+        tset.value([2, 3, 4], three)
+        tset.value(['a'], three)
         self.assertEqual(tset.value(), set(['a']))
-        self.assertEqual(tset.value(at=three), set([1, 2, 3]))
+        self.assertEqual(tset.value(at=two), set([1, 2, 3]))
 
     def test_interposed_same_time_update(self):
         one = datetime.now()
@@ -167,6 +174,7 @@ class TestSameTimeUpdates(unittest.TestCase):
         self.assertEqual(tset.value(at=five), set(['a', 'b', 3]))
         self.assertEqual(tset.value(), set([3, 4, 5]))
 
+
 class TestPerformance(unittest.TestCase):
 
     def test_not_limited_by_recursion_limit(self):
@@ -179,6 +187,7 @@ class TestPerformance(unittest.TestCase):
         self.assertEqual(tset.value(at=one), set())
         self.assertEqual(tset.value(at=two), set([0]))
         self.assertEqual(tset.value(), set([n+10]))
+
 
 class TestToAndFromLists(unittest.TestCase):
 

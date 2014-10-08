@@ -1,5 +1,6 @@
 from datetime import datetime
 
+
 class Tset(object):
     """
     Time sets maintain the states of a set data structure over time.
@@ -9,12 +10,12 @@ class Tset(object):
         """
         Create Tset, optionally with value at a time (datetime).
         """
-        self._data = dict() # initialize empty
+        self._data = dict()  # initialize empty
         if value is None and at is None:
-            return # no information in the Tset
+            return  # no information in the Tset
         if value is None:
-            value = set() # specfied `at` but not value; starts empty here
-        self.value(value, at) # `at` will get defaulted to now if need be
+            value = set()  # specfied `at` but not value; starts empty here
+        self.value(value, at)  # `at` will get defaulted to now if need be
 
     @classmethod
     def from_lists(cls, lists):
