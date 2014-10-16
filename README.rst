@@ -12,6 +12,7 @@ versions is slower because it walks through the history. The whole
 thing will eventually slow down when there are tons of versions
 because it goes through all the version times fairly naively.
 
+
 Usage
 -----
 
@@ -34,7 +35,24 @@ Usage
   > t.value(at=beginning)
   # {}
 
+
 Tests
 -----
 
 Run the tests with ``nosetests`` or ``python -m test``.
+
+
+Context
+-------
+
+The idea of preserving data history is not unique. There is a
+considerable work on `persistent data structures`_ (which is quite
+distinct from the idea of persisting data to disk). Interesting
+related (and more comprehensive) implementations include `ZODB`_'s
+`Generational Sets`_, `dat`_, and `Datomic`_.
+
+.. _persistent data structures: http://en.wikipedia.org/wiki/Persistent_data_structure
+.. _ZODB: http://www.zodb.org/
+.. _Generational Sets: https://bitbucket.org/zc/generationalset
+.. _dat: http://dat-data.com/
+.. _Datomic: http://www.datomic.com/
