@@ -53,6 +53,6 @@ related (and more comprehensive) implementations include `ZODB`_'s
 
 .. _persistent data structures: http://en.wikipedia.org/wiki/Persistent_data_structure
 .. _ZODB: http://www.zodb.org/
-.. _Generational Sets: https://bitbucket.org/zc/generationalset
+.. _Generational Sets: https://github.com/zc/generationalset
 .. _dat: http://dat-data.com/
 .. _Datomic: http://www.datomic.com/
